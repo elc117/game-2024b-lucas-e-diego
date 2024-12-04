@@ -1,1 +1,2 @@
-hey mama i wanna scream so loud for you cause i'm so proud of you
+./gradlew build
+./gradlew lwjgl3:run
