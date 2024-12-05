@@ -1,2 +1,1 @@
-./gradlew build
-./gradlew lwjgl3:run
+./gradlew build ./gradlew lwjgl3:run

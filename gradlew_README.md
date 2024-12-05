@@ -1,4 +1,4 @@
-# JogoLucasDiego
+# game-2024b-lucas-e-diego
 
 A [libGDX](https://libgdx.com/) project generated with [gdx-liftoff](https://github.com/libgdx/gdx-liftoff).
 
