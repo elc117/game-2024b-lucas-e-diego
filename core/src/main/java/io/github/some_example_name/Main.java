@@ -36,16 +36,16 @@ public class Main extends ApplicationAdapter {
     public void create() {
       batch = new SpriteBatch();
       
-      music = Gdx.audio.newMusic(Gdx.files.internal("lucesIntermitentes_music.mp3"));
+      music = Gdx.audio.newMusic(Gdx.files.internal("music_main.mp3"));
       kanyeTexture = new Texture(Gdx.files.internal("kanye_sprite.png"));
       
       answerTexture = new Texture(Gdx.files.internal("answer_sprite.png"));
       answersArray = new Array<Rectangle>();
 
-      bgTexture = new Texture(Gdx.files.internal("bg_temp.png"));
+      bgTexture = new Texture(Gdx.files.internal("bg_main.png"));
 
-      music.setLooping(true);
-      music.play();
+/*       music.setLooping(true);
+      music.play(); */
     }
 
     @Override
@@ -64,7 +64,7 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         batch.draw(bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        batch.draw(kanyeTexture, 130, (Gdx.graphics.getHeight() - Gdx.input.getY())-50);
+        moveKanye();
 
         for (Rectangle answer : answersArray){
           batch.draw(answerTexture, answer.x, answer.y);
@@ -78,6 +78,21 @@ public class Main extends ApplicationAdapter {
         batch.dispose();
         kanyeTexture.dispose();
         bgTexture.dispose();
+    }
+
+    private void moveKanye(){
+      float mouseLocationY = (Gdx.input.getY()-50);
+
+      if (mouseLocationY < 185){
+        batch.draw(kanyeTexture, 130, (Gdx.graphics.getHeight()-304));
+      }
+      else if (mouseLocationY > 630){
+        batch.draw(kanyeTexture, 130, (Gdx.graphics.getHeight()-749));
+      }
+      else{
+        batch.draw(kanyeTexture, 130, (Gdx.graphics.getHeight() - Gdx.input.getY())-50);
+      }
+      System.err.println(mouseLocationY);
     }
 
     private void spawnAnswers(){
