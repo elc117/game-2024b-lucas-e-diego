@@ -20,10 +20,21 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
+
 import java.util.Iterator;
+
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+
 
 /** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
 public class Main extends ApplicationAdapter {
+
+    //criando as games screens
+    private enum Screen { MENU, JOGANDO;}
+    private Screen telaAtual = Screen.MENU;
+
+    private BitmapFont font;
     private SpriteBatch batch;
     private Texture kanyeTexture, bgTexture, answerTexture;
     private Music music;
@@ -35,6 +46,8 @@ public class Main extends ApplicationAdapter {
     @Override
     public void create() {
       batch = new SpriteBatch();
+      font = new BitmapFont();
+      font.setColor(Color.WHITE);
       
       music = Gdx.audio.newMusic(Gdx.files.internal("music_main.mp3"));
       kanyeTexture = new Texture(Gdx.files.internal("kanye_sprite.png"));
@@ -52,23 +65,19 @@ public class Main extends ApplicationAdapter {
     public void render() {
       
         timeSeconds += Gdx.graphics.getDeltaTime();
-        if(timeSeconds > period){
-            timeSeconds -= period;
-            this.spawnAnswers();
-        }
-        this.moveAnswers();
 
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         Gdx.graphics.setSystemCursor(SystemCursor.None);
 
         batch.begin();
-        batch.draw(bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-        moveKanye();
-
-        for (Rectangle answer : answersArray){
-          batch.draw(answerTexture, answer.x, answer.y);
+        
+        if(telaAtual == Screen.MENU) {
+          exibirMenu();
         }
+        else if (telaAtual == Screen.JOGANDO) {
+          atualizarJogo(timeSeconds);
+        }
+
 
         batch.end();
     }
@@ -78,6 +87,35 @@ public class Main extends ApplicationAdapter {
         batch.dispose();
         kanyeTexture.dispose();
         bgTexture.dispose();
+    }
+
+    private void atualizarJogo(float timeSeconds) {
+      if (timeSeconds > period) {
+        timeSeconds -= period;
+        this.spawnAnswers();
+      }
+      this.moveAnswers();
+
+      batch.draw(bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+      moveKanye();
+
+      for (Rectangle answer : answersArray){
+        batch.draw(answerTexture, answer.x, answer.y);
+      }
+    }
+
+    private void exibirMenu() {
+      //fundo menu
+      batch.draw(bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+      font.getData().setScale(2);
+      font.draw(batch, "Clique para inciar!", Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2 + 100);
+      font.setColor(1, 0, 0, 1);
+
+      if(Gdx.input.isTouched()) {
+        telaAtual = Screen.JOGANDO;
+      }
     }
 
     private void moveKanye(){
