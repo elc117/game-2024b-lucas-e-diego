@@ -36,11 +36,11 @@ public class Main extends ApplicationAdapter {
 
     private BitmapFont font;
     private SpriteBatch batch;
-    private Texture kanyeTexture, bgTexture, answerTexture, menubgTexture;
+    private Texture kanyeTexture, bgTexture, menubgTexture, questionTexture, answerTexture;
     private Music music;
 
-    private float timeSeconds = 11;
-    private float period = 10;
+    private float timeSeconds = 16;
+    private float period = 15;
     private Array<Rectangle> answersArray;
 
     @Override
@@ -52,11 +52,11 @@ public class Main extends ApplicationAdapter {
       music = Gdx.audio.newMusic(Gdx.files.internal("music_main.mp3"));
       kanyeTexture = new Texture(Gdx.files.internal("kanye_sprite.png"));
       menubgTexture = new Texture(Gdx.files.internal("bg_menu.png"));
+      bgTexture = new Texture(Gdx.files.internal("bg_main.png"));
+      questionTexture = new Texture(Gdx.files.internal("pergunta1.png"));
       answerTexture = new Texture(Gdx.files.internal("answer_sprite.png"));
       answersArray = new Array<Rectangle>();
-
-      bgTexture = new Texture(Gdx.files.internal("bg_main.png"));
-
+      
       music.setLooping(true);
       music.play();
     }
@@ -89,7 +89,7 @@ public class Main extends ApplicationAdapter {
         bgTexture.dispose();
     }
 
-    private float atualizarJogo(float timeSeconds) {
+    private float atualizarJogo(float timeSeconds) {  
       if (timeSeconds > period) {
         timeSeconds -= period;
         this.spawnAnswers();
@@ -99,6 +99,8 @@ public class Main extends ApplicationAdapter {
       batch.draw(bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
       moveKanye();
+
+      batch.draw(questionTexture, 250, Gdx.graphics.getHeight()-100);
 
       for (Rectangle answer : answersArray){
         batch.draw(answerTexture, answer.x, answer.y);
