@@ -31,17 +31,17 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 public class Main extends ApplicationAdapter {
 
     //criando as games screens
-    private enum Screen { MENU, JOGANDO;}
+    private enum Screen { MENU, JOGANDO, ENDING;}
     private Screen telaAtual = Screen.MENU;
 
     private BitmapFont font;
     private SpriteBatch batch;
-    private Texture kanyeTexture, bgTexture, menubgTexture, questionTexture, answerTexture;
-    private Music music;
+    private Texture kanyeTexture, bgTexture, menubgTexture, endingbgTexture, questionTexture, answerTexture;
+    private Music musicMain, musicEnding;
 
     private float timeSeconds = 16;
     private float period = 15;
-    private int countAnswers = 0, i = 0;
+    private int countAnswers = 0, i = 0, acertos = 0, erros = 0;
     private Array<Answer> answersArray;
     private Array<Texture> answersTextures;
     private Array<Texture> questionsTextures;
@@ -54,10 +54,12 @@ public class Main extends ApplicationAdapter {
       font = new BitmapFont();
       font.setColor(Color.WHITE);
       
-      music = Gdx.audio.newMusic(Gdx.files.internal("music_main.mp3"));
+      musicMain = Gdx.audio.newMusic(Gdx.files.internal("music_main.mp3"));
+      musicEnding = Gdx.audio.newMusic(Gdx.files.internal("music_ending.mp3"));
       kanyeTexture = new Texture(Gdx.files.internal("kanye_sprite.png"));
       menubgTexture = new Texture(Gdx.files.internal("bg_menu.png"));
       bgTexture = new Texture(Gdx.files.internal("bg_main.png"));
+      endingbgTexture = new Texture(Gdx.files.internal("bg_ending.png"));
       
       questionsTextures = new Array<Texture>();
       for (i = 0; i < 10; i++) {
@@ -72,8 +74,7 @@ public class Main extends ApplicationAdapter {
         answersTextures.add(answerTexture);
       }
       
-      music.setLooping(true);
-      music.play();
+      musicEnding.setLooping(true);
     }
 
     @Override
@@ -85,13 +86,21 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         
         if(telaAtual == Screen.MENU) {
-          music.pause();
           exibirMenu();
         }
         else if (telaAtual == Screen.JOGANDO) {
-          music.play();
+          musicMain.play();
           timeSeconds += Gdx.graphics.getDeltaTime();
           timeSeconds = atualizarJogo(timeSeconds);
+        }
+        else {
+          musicMain.pause();
+          musicEnding.play();
+          batch.draw(endingbgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
+          font.getData().setScale(8);
+          font.setColor(Color.WHITE);
+          font.draw(batch, "Obrigado por jogar!", Gdx.graphics.getWidth() / 2 - 250, Gdx.graphics.getHeight() / 2 + 100);
         }
 
         batch.end();
@@ -107,11 +116,26 @@ public class Main extends ApplicationAdapter {
     private float atualizarJogo(float timeSeconds) {  
       if (timeSeconds > period) {
         timeSeconds -= period;
-        countAnswers = this.spawnAnswers(countAnswers);
+        if (countAnswers < 19){
+          countAnswers = this.spawnAnswers(countAnswers);
+        }
+        else {
+          telaAtual = Screen.ENDING;
+        }
+        
       }
 
       batch.draw(bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
+      font.getData().setScale(5);
+      font.setColor(Color.GREEN);
+      font.draw(batch, "Acertos: " + acertos, 20, 120);
+      
+
+      font.getData().setScale(5);
+      font.setColor(Color.RED);
+      font.draw(batch, "Erros: " + erros, 450, 120);
+      
       moveKanye();
       timeSeconds = this.moveAnswers(countAnswers, timeSeconds);
 
@@ -168,15 +192,15 @@ public class Main extends ApplicationAdapter {
         batch.draw(answersTextures.get(i), answersArray.get(i).rectangle.x, answersArray.get(i).rectangle.y);
         batch.draw(answersTextures.get(i+1), answersArray.get(i+1).rectangle.x, answersArray.get(i+1).rectangle.y);
   
-        answer1.rectangle.x -= 2;
-        answer2.rectangle.x -= 2;
+        answer1.rectangle.x -= 1;
+        answer2.rectangle.x -= 1;
   
         if (isColisao(130, (Gdx.graphics.getHeight() - Gdx.input.getY())-50, kanyeTexture.getWidth(), kanyeTexture.getHeight(), answer1.rectangle.x, answer1.rectangle.y, answer1.rectangle.getWidth(), answer1.rectangle.getHeight())){
           if (answer1.isCorrect){
-            System.err.println("RESPOSTA CORRETA");
+            acertos++;
           }
           else {
-            System.err.println("RESPOSTA INCORRETA");
+            erros++;
           }
   
           answer1.rectangle.y = Gdx.graphics.getWidth()+50;
@@ -187,10 +211,10 @@ public class Main extends ApplicationAdapter {
   
         if (isColisao(130, (Gdx.graphics.getHeight() - Gdx.input.getY())-50, kanyeTexture.getWidth(), kanyeTexture.getHeight(), answer2.rectangle.x, answer2.rectangle.y, answer2.rectangle.getWidth(), answer2.rectangle.getHeight())){
           if (answer2.isCorrect){
-            System.err.println("RESPOSTA CORRETA");
+            acertos++;
           }
           else {
-            System.err.println("RESPOSTA INCORRETA");
+            erros++;
           }
   
           answer1.rectangle.y = Gdx.graphics.getWidth()+50;
