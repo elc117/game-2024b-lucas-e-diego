@@ -1,6 +1,6 @@
 ***YENOSAUR ADVENTURES QUIZ***
 
-![](yenosaur.png)
+![](assets/Yenosaur.png)
 
 *Sobre o jogo:*
 
