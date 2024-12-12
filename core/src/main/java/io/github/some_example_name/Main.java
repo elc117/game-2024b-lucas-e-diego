@@ -63,8 +63,6 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-      
-        timeSeconds += Gdx.graphics.getDeltaTime();
 
         ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
         Gdx.graphics.setSystemCursor(SystemCursor.None);
@@ -75,7 +73,8 @@ public class Main extends ApplicationAdapter {
           exibirMenu();
         }
         else if (telaAtual == Screen.JOGANDO) {
-          atualizarJogo(timeSeconds);
+          timeSeconds += Gdx.graphics.getDeltaTime();
+          timeSeconds = atualizarJogo(timeSeconds);
         }
 
 
@@ -89,7 +88,7 @@ public class Main extends ApplicationAdapter {
         bgTexture.dispose();
     }
 
-    private void atualizarJogo(float timeSeconds) {
+    private float atualizarJogo(float timeSeconds) {
       if (timeSeconds > period) {
         timeSeconds -= period;
         this.spawnAnswers();
@@ -103,6 +102,8 @@ public class Main extends ApplicationAdapter {
       for (Rectangle answer : answersArray){
         batch.draw(answerTexture, answer.x, answer.y);
       }
+
+      return timeSeconds;
     }
 
     private void exibirMenu() {
@@ -134,9 +135,9 @@ public class Main extends ApplicationAdapter {
     }
 
     private void spawnAnswers(){
-      Rectangle answer = new Rectangle(Gdx.graphics.getWidth(), 50, answerTexture.getWidth(), answerTexture.getHeight());
+      Rectangle answer = new Rectangle(Gdx.graphics.getWidth(), 590, answerTexture.getWidth(), answerTexture.getHeight());
       answersArray.add(answer);
-      answer = new Rectangle(Gdx.graphics.getWidth(), 280, answerTexture.getWidth(), answerTexture.getHeight());
+      answer = new Rectangle(Gdx.graphics.getWidth(), 300, answerTexture.getWidth(), answerTexture.getHeight());
       answersArray.add(answer);
     }
 
