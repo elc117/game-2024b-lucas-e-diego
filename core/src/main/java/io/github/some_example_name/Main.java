@@ -36,7 +36,7 @@ public class Main extends ApplicationAdapter {
 
     private BitmapFont font;
     private SpriteBatch batch;
-    private Texture kanyeTexture, bgTexture, answerTexture;
+    private Texture kanyeTexture, bgTexture, answerTexture, menubgTexture;
     private Music music;
 
     private float timeSeconds = 11;
@@ -51,7 +51,7 @@ public class Main extends ApplicationAdapter {
       
       music = Gdx.audio.newMusic(Gdx.files.internal("music_main.mp3"));
       kanyeTexture = new Texture(Gdx.files.internal("kanye_sprite.png"));
-      
+      menubgTexture = new Texture(Gdx.files.internal("bg_menu.png"));
       answerTexture = new Texture(Gdx.files.internal("answer_sprite.png"));
       answersArray = new Array<Rectangle>();
 
@@ -109,12 +109,12 @@ public class Main extends ApplicationAdapter {
 
     private void exibirMenu() {
       //fundo menu
-      batch.draw(bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+      batch.draw(menubgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-      font.getData().setScale(2);
-      font.draw(batch, "Clique para inciar!", Gdx.graphics.getWidth() / 2 - 100, Gdx.graphics.getHeight() / 2 + 100);
-      font.setColor(1, 0, 0, 1);
-
+      font.getData().setScale(5);
+      font.draw(batch, "Clique para inciar!", Gdx.graphics.getWidth() / 2 - 250, Gdx.graphics.getHeight() / 2 + 100);
+      font.setColor(Color.WHITE);
+      //muda estado do jogo  quando clica no menu
       if(Gdx.input.isTouched()) {
         telaAtual = Screen.JOGANDO;
       }
