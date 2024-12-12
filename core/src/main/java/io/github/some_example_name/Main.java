@@ -57,8 +57,8 @@ public class Main extends ApplicationAdapter {
 
       bgTexture = new Texture(Gdx.files.internal("bg_main.png"));
 
-/*       music.setLooping(true);
-      music.play(); */
+      music.setLooping(true);
+      music.play();
     }
 
     @Override
@@ -70,13 +70,14 @@ public class Main extends ApplicationAdapter {
         batch.begin();
         
         if(telaAtual == Screen.MENU) {
+          music.pause();
           exibirMenu();
         }
         else if (telaAtual == Screen.JOGANDO) {
+          music.play();
           timeSeconds += Gdx.graphics.getDeltaTime();
           timeSeconds = atualizarJogo(timeSeconds);
         }
-
 
         batch.end();
     }
