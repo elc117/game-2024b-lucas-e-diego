@@ -34,6 +34,10 @@ No jogo, o usuário irá controlar o rapper e compositor americano Kanye West, q
 
 <p align="justify">Durante o processo de decisão de como iriamos elaborar nosso próprio projeto, gostamos muito de uma das propostas de inspiração trazidas pela professora, o jogo Riddles in the Sky. A partir disso, buscamos implementar no projeto interesses pessoais mútuos, como o bom gosto pela música, e ao mesmo tempo, atender aos requisitos solicitados para a elaboração do projeto. <br><br>De início, encontramos algumas dificuldades na configuração e ambientação com a LibGDX. Todavia, após isso, os passos iniciais fluíram muito bem, implementando movimentação do jogador e colisão com objetos. Entretanto, tudo que é bom dura pouco. Ao começarmos a implementar as perguntas do quiz diversos problemas surgiram, principalmente na manipulação como um todo dos vetores das respostas, seja sua movimentação, diferenciação entre as duas respostas que estavam na tela, intervalo entre perguntas, etc. Esses problemas levaram muito esforço e tempo (mais do que o planejado hihi) pra serem resolvidos. <br><br>Sabendo que o tempo é relativo e antes tarde do que nunca, seguimos no projeto sabendo que a pior parte havia passado. A implementação de telas diversas (menu, tela principal de jogo e de finalização) renderam poucos empecilhos, assim como o sistema de erros e acertos. Dizemos com tranquilidade que o trabalho em si foi igualmente desafiador e divertido.</p>
 
+> [!NOTE]
+> Comando usado para buildar/rodar o projeto:
+ ```./gradlew build; ./gradlew lwjgl3:run```
+
 ## Referências:
 > [LibGDX WIKI](https://libgdx.com/wiki/app/the-life-cycle)
 
@@ -43,5 +47,5 @@ No jogo, o usuário irá controlar o rapper e compositor americano Kanye West, q
 
 > [Gerador Assets](https://www.kdau.com/scrollish/)
 
-> Ferramentas IA
+> Ferramentas IA (também majoritariamente para geração de assets extra-código)
 
