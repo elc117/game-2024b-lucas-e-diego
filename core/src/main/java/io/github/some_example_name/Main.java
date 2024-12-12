@@ -41,7 +41,12 @@ public class Main extends ApplicationAdapter {
 
     private float timeSeconds = 16;
     private float period = 15;
-    private Array<Rectangle> answersArray;
+    private int countAnswers = 0, i = 0;
+    private Array<Answer> answersArray;
+    private Array<Texture> answersTextures;
+    private Array<Texture> questionsTextures;
+    private Answer correctAnswer, incorrectAnswer, answer1, answer2;
+    private Rectangle correctAnswerRect, incorrectAnswerRect;
 
     @Override
     public void create() {
@@ -53,9 +58,19 @@ public class Main extends ApplicationAdapter {
       kanyeTexture = new Texture(Gdx.files.internal("kanye_sprite.png"));
       menubgTexture = new Texture(Gdx.files.internal("bg_menu.png"));
       bgTexture = new Texture(Gdx.files.internal("bg_main.png"));
-      questionTexture = new Texture(Gdx.files.internal("pergunta1.png"));
-      answerTexture = new Texture(Gdx.files.internal("answer_sprite.png"));
-      answersArray = new Array<Rectangle>();
+      
+      questionsTextures = new Array<Texture>();
+      for (i = 0; i < 10; i++) {
+        questionTexture = new Texture(Gdx.files.internal("pergunta" + (i+1) + ".png"));
+        questionsTextures.add(questionTexture);
+      }
+
+      answersTextures = new Array<Texture>();
+      answersArray = new Array<Answer>();
+      for (i = 0; i < 20; i++) {
+        answerTexture = new Texture(Gdx.files.internal("resposta" + (i+1) + ".png"));
+        answersTextures.add(answerTexture);
+      }
       
       music.setLooping(true);
       music.play();
@@ -92,19 +107,13 @@ public class Main extends ApplicationAdapter {
     private float atualizarJogo(float timeSeconds) {  
       if (timeSeconds > period) {
         timeSeconds -= period;
-        this.spawnAnswers();
+        countAnswers = this.spawnAnswers(countAnswers);
       }
-      this.moveAnswers();
 
       batch.draw(bgTexture, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
       moveKanye();
-
-      batch.draw(questionTexture, 250, Gdx.graphics.getHeight()-100);
-
-      for (Rectangle answer : answersArray){
-        batch.draw(answerTexture, answer.x, answer.y);
-      }
+      timeSeconds = this.moveAnswers(countAnswers, timeSeconds);
 
       return timeSeconds;
     }
@@ -134,29 +143,63 @@ public class Main extends ApplicationAdapter {
       else{
         batch.draw(kanyeTexture, 130, (Gdx.graphics.getHeight() - Gdx.input.getY())-50);
       }
-      System.err.println(mouseLocationY);
     }
 
-    private void spawnAnswers(){
-      Rectangle answer = new Rectangle(Gdx.graphics.getWidth(), 590, answerTexture.getWidth(), answerTexture.getHeight());
-      answersArray.add(answer);
-      answer = new Rectangle(Gdx.graphics.getWidth(), 300, answerTexture.getWidth(), answerTexture.getHeight());
-      answersArray.add(answer);
+    private int spawnAnswers(int countAnswers){
+      correctAnswerRect = new Rectangle(Gdx.graphics.getWidth(), 600, answersTextures.get(countAnswers).getWidth(), answersTextures.get(countAnswers).getHeight());
+      correctAnswer = new Answer(correctAnswerRect, true, answersTextures.get(countAnswers));
+  
+      incorrectAnswerRect = new Rectangle(Gdx.graphics.getWidth(), 350, answersTextures.get(countAnswers+1).getWidth(), answersTextures.get(countAnswers+1).getHeight());
+      incorrectAnswer = new Answer(incorrectAnswerRect, false, answersTextures.get(countAnswers+1));
+  
+      answersArray.add(correctAnswer);
+      answersArray.add(incorrectAnswer);
+  
+      countAnswers += 2;
+      return countAnswers;
     }
 
-    private void moveAnswers(){ 
-      for(Iterator<Rectangle> iter = answersArray.iterator(); iter.hasNext();){
-        Rectangle answer = iter.next();
-        answer.x -= 0.5;
+    public float moveAnswers(int countAnswers, float timeSeconds){
+      for (i = countAnswers-2; i < answersArray.size; i+=2){
+        answer1 = answersArray.get(i);
+        answer2 = answersArray.get(i+1);
+  
+        batch.draw(questionsTextures.get(i/2), 250, Gdx.graphics.getHeight()-100);
+        batch.draw(answersTextures.get(i), answersArray.get(i).rectangle.x, answersArray.get(i).rectangle.y);
+        batch.draw(answersTextures.get(i+1), answersArray.get(i+1).rectangle.x, answersArray.get(i+1).rectangle.y);
+  
+        answer1.rectangle.x -= 2;
+        answer2.rectangle.x -= 2;
+  
+        if (isColisao(130, (Gdx.graphics.getHeight() - Gdx.input.getY())-50, kanyeTexture.getWidth(), kanyeTexture.getHeight(), answer1.rectangle.x, answer1.rectangle.y, answer1.rectangle.getWidth(), answer1.rectangle.getHeight())){
+          if (answer1.isCorrect){
+            System.err.println("RESPOSTA CORRETA");
+          }
+          else {
+            System.err.println("RESPOSTA INCORRETA");
+          }
+  
+          answer1.rectangle.y = Gdx.graphics.getWidth()+50;
+          answer2.rectangle.y = Gdx.graphics.getWidth()+50;
 
-        if (isColisao(130, (Gdx.graphics.getHeight() - Gdx.input.getY())-50, kanyeTexture.getWidth(), kanyeTexture.getHeight(), answer.x, answer.y, answer.getWidth(), answer.getHeight())){
-          iter.remove();      
+          timeSeconds = 16;
         }
+  
+        if (isColisao(130, (Gdx.graphics.getHeight() - Gdx.input.getY())-50, kanyeTexture.getWidth(), kanyeTexture.getHeight(), answer2.rectangle.x, answer2.rectangle.y, answer2.rectangle.getWidth(), answer2.rectangle.getHeight())){
+          if (answer2.isCorrect){
+            System.err.println("RESPOSTA CORRETA");
+          }
+          else {
+            System.err.println("RESPOSTA INCORRETA");
+          }
+  
+          answer1.rectangle.y = Gdx.graphics.getWidth()+50;
+          answer2.rectangle.y = Gdx.graphics.getWidth()+50;
 
-        if (answer.x + answerTexture.getWidth() < 0){
-          iter.remove();
+          timeSeconds = 16;
         }
       }
+      return timeSeconds;
     }
 
     private boolean isColisao(float x1, float y1, float w1, float h1, float x2, float y2, float w2, float h2){
@@ -167,5 +210,17 @@ public class Main extends ApplicationAdapter {
         return false;
       }
 
+    }
+
+    class Answer {
+      Rectangle rectangle;
+      boolean isCorrect;
+      Texture texture;
+  
+      public Answer(Rectangle rectangle, boolean isCorrect, Texture texture) {
+        this.rectangle = rectangle;
+        this.isCorrect = isCorrect;
+        this.texture = texture;
+      }
     }
 }
